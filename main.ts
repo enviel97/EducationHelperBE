@@ -1,14 +1,13 @@
 import { Express as NExpress } from "express";
 import { createServer } from "http";
-import express from "./src/root/express";
-import Mongoose from "./src/root/mongose";
+import express from "./src/config/express";
+import mongoose from "./src/config/mongose";
 import "./src/route";
 
 const config = (): Promise<NExpress> => {
-  const moongose = new Mongoose();
   return new Promise((resolve, reject) => {
     try {
-      moongose.config();
+      mongoose.config();
       const app = express.config();
       resolve(app);
     } catch (error: any) {
@@ -19,8 +18,9 @@ const config = (): Promise<NExpress> => {
 
 const run = async () => {
   const app = await config();
-  createServer(app).listen(process.env.PORT || 3000, () => {
-    console.log(`Local host: http://localhost:${process.env.PORT || 3000}`);
+  const PORT = process.env.PORT || 3000;
+  createServer(app).listen(PORT, () => {
+    console.log(`Local host: http://localhost:${PORT}`);
   });
 };
 

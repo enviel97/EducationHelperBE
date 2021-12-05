@@ -6,6 +6,10 @@ import express, {
   Express as NExpress,
 } from "express";
 import { apiKey } from "../helper/dotenv";
+import { error, success } from "../helper/https";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
 
 export interface RouteType {
   name: string;
@@ -28,32 +32,39 @@ const apiChecker = () => {
   app.use((req, res, next) => {
     const key = req.headers["api-key"] || req.query.apiKey;
     if (!!key && key === apiKey) next();
-    else res.status(404).json({ message: "Invaid API key" });
+    else error(res).UNAUTHORIZED("Invalid api key");
   });
 };
 
 const config = (): NExpress => {
-  // To do config database
-  app.use(json());
-  app.use(urlencoded({ extended: true }));
+  // config secure
+  app.use(morgan("dev"));
+  app.use(helmet());
+  app.use(cors());
 
+  // config extends
+  app.use(json());
+  app.use(urlencoded({ extended: false }));
   // validated key api
   apiChecker();
-  app.get("/", (_, res) => res.send("<h1>Welcome</h1>"));
+  app.get("/", (_, res) =>
+    success(res).NOCONTENT({ messenger: "Welcome to backend application" })
+  );
   routers.forEach((route) => createRouter(route));
-  app.use((_, res) => res.status(404).send("<h1>Not found</h1>"));
+  app.use((_, res) => error(res).NOTFOUND("Redirect not found"));
   return app;
 };
 
+const inject = (router: RouteType) => {
+  console.log(router.name);
+  routers.push(router);
+};
 const RExpress = {
   config: () => {
     delete (RExpress as any)["config"];
     return config();
   },
-  inject: (router: RouteType) => {
-    console.log("injected");
-    routers.push(router);
-  },
+  inject,
 };
 
 export default RExpress;

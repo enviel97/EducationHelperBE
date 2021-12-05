@@ -1,19 +1,19 @@
-import { response, Response } from "express";
+import { Response } from "express";
 
-export function error(message: string) {
+export function error(res: Response) {
   return {
-    INVALID: (res: Response) => res.status(404).json({ error: message }),
-    UNAUTHORIZED: (res: Response) => res.status(401).json({ error: message }),
-    UNKNOWN: (res: Response) => res.status(400).json({ error: message }),
-    CONFLICT: (res: Response) => res.status(409).json({ error: message }),
+    NOTFOUND: (mess: string) => res.status(404).json({ error: mess }),
+    UNAUTHORIZED: (mess: string) => res.status(401).json({ error: mess }),
+    BADREQUEST: (mess: string) => res.status(400).json({ error: mess }),
+    CONFLICT: (mess: string) => res.status(409).json({ error: mess }),
   };
 }
 
-export function success(data: any) {
+export function success(res: Response) {
   return {
-    OK: (res: Response) => res.status(200).json({ data }),
-    CREATED: (res: Response) => res.status(201).json({ data }),
-    ACCEPTED: (res: Response) => res.status(202).json({ data }),
-    NOCONTENT: (res: Response) => res.status(202).json({ data }),
+    OK: (data: any) => res.status(200).json({ data }),
+    CREATED: (data: any) => res.status(201).json({ data }),
+    ACCEPTED: (data: any) => res.status(202).json({ data }),
+    NOCONTENT: (data: any) => res.status(202).json({ data }),
   };
 }

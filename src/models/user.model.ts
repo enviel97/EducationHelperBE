@@ -1,4 +1,6 @@
-import { model, Mongoose, Schema } from "mongoose";
+import { Schema } from "mongoose";
+import mongoose from "../config/mongose";
+import bcrypt from "../helper/bcrypt";
 
 export enum UType {
   User = "User",
@@ -9,8 +11,18 @@ export enum AType {
   Google = "Google",
   Email = "Email",
 }
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  password: string;
+  userType: UType;
+  accountType: AType;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
 
-const userSchema = new Schema(
+const UserSchema = new Schema(
   {
     name: { type: String, required: true, min: 6, max: 255 },
     email: { type: String, required: true, min: 6, max: 255 },
@@ -22,4 +34,13 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-export default model("user", userSchema);
+UserSchema.pre("save", async function (next) {
+  let user = this;
+  if (this.isModified("password") || this.isNew) {
+    const hash = await bcrypt.hash(user.password);
+    user.password = hash;
+  }
+  return next();
+});
+
+export const UserModel = mongoose.client.model<IUser>("User", UserSchema);

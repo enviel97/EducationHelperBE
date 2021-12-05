@@ -17,4 +17,4 @@ const rule = [
     .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/, "i"),
 ];
 
-export default [rule, validation];
+export default { signup: [rule, validation] };
