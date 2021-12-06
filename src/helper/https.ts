@@ -11,9 +11,9 @@ export function error(res: Response) {
 
 export function success(res: Response) {
   return {
-    OK: (data: any) => res.status(200).json({ data }),
-    CREATED: (data: any) => res.status(201).json({ data }),
-    ACCEPTED: (data: any) => res.status(202).json({ data }),
-    NOCONTENT: (data: any) => res.status(202).json({ data }),
+    OK: (data: any) => res.status(200).json(data),
+    CREATED: (data: any) => res.status(201).json(data),
+    ACCEPTED: (data: any) => res.status(202).json(data),
+    NOCONTENT: (data: any) => res.status(202).json(data),
   };
 }
