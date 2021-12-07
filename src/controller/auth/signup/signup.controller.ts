@@ -14,6 +14,7 @@ export const register = async (req: Request, res: Response) => {
   if (result) {
     return success(res).CREATED({
       id: result.id ?? result._id,
+      email: result.email,
       name: result.name,
       phoneNumber: result.phoneNumber,
       userType: result.userType,
