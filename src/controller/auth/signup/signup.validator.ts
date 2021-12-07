@@ -14,7 +14,10 @@ const rule = [
     "Password should be combination of one uppercase, one lower case, one special char, one digit and min 6"
   )
     .notEmpty()
-    .matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}$/, "i"),
+    .matches(
+      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[!@#\$&*~.]).{8,}$/,
+      "i"
+    ),
 ];
 
 export default { signup: [rule, validation] };
