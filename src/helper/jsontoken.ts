@@ -1,4 +1,4 @@
-import { sign, verify } from "jsonwebtoken";
+import { sign, verify as nVerify, decode as nDecode } from "jsonwebtoken";
 import { private_key } from "./dotenv";
 
 const encode = (data: string): string | object => {
@@ -12,16 +12,24 @@ const encode = (data: string): string | object => {
 
 const decode = (token: string): string | object => {
   try {
-    const decode = verify(`${token}`, private_key);
-    return decode;
+    const data = nDecode(`${token}`);
+    return (data as any)["data"];
   } catch (error: any) {
     throw error;
   }
 };
 
-const refresh = (token: string) => {};
+const verify = (token: string) => {
+  try {
+    const verify = nVerify(`${token}`, private_key);
+    return verify;
+  } catch (error: any) {
+    throw error;
+  }
+};
 
 export const Token = {
   create: encode,
-  verify: decode,
+  decode,
+  verify,
 };
