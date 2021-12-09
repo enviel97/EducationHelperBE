@@ -13,6 +13,7 @@ export const getUserInfo = async (req: Request, res: Response) => {
     name: 1,
     email: 1,
     phoneNumber: 1,
+    avatar: 1,
     userType: 1,
   }).catch(() => null);
   if (!user) return error(res).NOTFOUND("User not found");

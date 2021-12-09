@@ -2,25 +2,26 @@ import { Schema } from "mongoose";
 import mongoose from "../config/mongose";
 import bcrypt from "../helper/bcrypt";
 
-export enum UType {
-  User = "User",
-  Admin = "Admin",
-}
-
-export enum AType {
-  Google = "Google",
-  Email = "Email",
-}
 export interface IUser extends Document {
+  serviceId: { [key: string]: string };
   name: string;
   email: string;
   phoneNumber: string;
   password: string;
-  userType: UType;
-  accountType: AType;
+  avatar: string;
+  userType: string;
   createdAt: Date | string;
   updatedAt: Date | string;
 }
+
+const ServiceId = new Schema(
+  {
+    googleID: { type: String, default: "" },
+    zaloID: { type: String, default: "" },
+    facebookID: { type: String, default: "" },
+  },
+  { _id: false }
+);
 
 const UserSchema = new Schema(
   {
@@ -28,8 +29,9 @@ const UserSchema = new Schema(
     email: { type: String, required: true, min: 6, max: 255 },
     phoneNumber: { type: String, min: 6 },
     password: { type: String, required: true, min: 6, max: 1024 },
-    userType: { type: String, default: UType.User, enum: UType },
-    accountType: { type: String, default: AType.Email, enum: AType },
+    userType: { type: String, default: "User" },
+    avatar: { type: String },
+    serviceId: { type: ServiceId, default: {} },
   },
   { timestamps: true }
 );
