@@ -7,7 +7,7 @@ export const getUserInfo = async (req: Request, res: Response) => {
   const { authenticate } = req.headers;
   if (!authenticate) return error(res).UNAUTHORIZED("Invalid authenticate");
   try {
-    const { data } = Token.decode(`${authenticate}`) as { data: string };
+    const data = Token.decode(`${authenticate}`);
     if (!data) return error(res).BADREQUEST("Invalid authenticate");
     const user = await UserModel.findById(data, {
       _id: 0,
