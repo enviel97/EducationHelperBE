@@ -4,9 +4,6 @@ import RFA, { firestore } from "firebase-admin";
 let admin: RFA.app.App;
 
 const config = async (): Promise<void> => {
-  console.log(firebaseConfig.private_key);
-
-  console.log(firebaseConfig.private_key.replace(/\\n/g, "\n"));
   try {
     admin = RFA.initializeApp({
       credential: RFA.credential.cert(firebaseConfig as any),

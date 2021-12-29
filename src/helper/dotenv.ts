@@ -9,7 +9,7 @@ export const firebaseConfig = {
   type: process.env.type as string,
   project_id: process.env.project_id as string,
   private_key_id: process.env.f_private_key_id as string,
-  private_key: process.env.f_private_key as string,
+  private_key: (process.env.f_private_key as string).replaceAll(/\\n/g, "\n"),
   client_email: process.env.client_email as string,
   client_id: process.env.client_id as string,
   auth_uri: process.env.auth_uri as string,
