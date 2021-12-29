@@ -1,2 +1,2 @@
 export { default as validator } from "./signin.validator";
-export { signinWithEmail, signinWithGoogleAccount } from "./signin.controller";
+export { signinWithEmail, signinWithGoogle } from "./signin.controller";

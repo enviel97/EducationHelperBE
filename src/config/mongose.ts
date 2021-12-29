@@ -30,7 +30,7 @@ const mongoose = {
   client,
   config: () => {
     delete (mongoose as any)["config"];
-    config();
+    return config();
   },
 };
 

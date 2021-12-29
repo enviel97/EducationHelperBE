@@ -1,20 +1,24 @@
 import { Express as NExpress } from "express";
 import { createServer } from "http";
 import express from "./src/config/express";
+import firebase from "./src/config/firebase";
 import mongoose from "./src/config/mongose";
+import redis from "./src/config/redis";
 import "./src/route";
 
-const config = (): Promise<NExpress> => {
-  return new Promise((resolve, reject) => {
+const config = (): Promise<NExpress> =>
+  new Promise(async (resolve, reject) => {
     try {
-      mongoose.config();
+      await mongoose.config();
+      await firebase.config();
+      await redis.config();
+
       const app = express.config();
       resolve(app);
     } catch (error: any) {
       reject(error);
     }
   });
-};
 
 const run = async () => {
   const app = await config();

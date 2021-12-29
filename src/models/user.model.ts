@@ -1,8 +1,9 @@
 import { Schema } from "mongoose";
 import mongoose from "../config/mongose";
 import bcrypt from "../helper/bcrypt";
+import { TimeStamp } from "../helper/type.helper";
 
-export interface IUser extends Document {
+export interface IUser extends TimeStamp, Document {
   serviceId: { [key: string]: string };
   name: string;
   email: string;
@@ -10,8 +11,8 @@ export interface IUser extends Document {
   password: string;
   avatar: string;
   userType: string;
-  createdAt: Date | string;
-  updatedAt: Date | string;
+  classrooms: string[];
+  exams: string[];
 }
 
 const ServiceId = new Schema(
@@ -32,6 +33,8 @@ const UserSchema = new Schema(
     userType: { type: String, default: "User" },
     avatar: { type: String },
     serviceId: { type: ServiceId, default: {} },
+    classrooms: { type: [String], default: [] },
+    exams: { type: [String], default: [] },
   },
   { timestamps: true }
 );

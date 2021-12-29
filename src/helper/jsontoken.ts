@@ -10,12 +10,13 @@ const encode = (data: string): string | object => {
   return token;
 };
 
-const decode = (token: string): string | object => {
+const decode = (token: string): string | undefined => {
   try {
     const data = nDecode(`${token}`);
     return (data as any)["data"];
   } catch (error: any) {
-    throw error;
+    console.log(`[Token decode error]: ${error}`);
+    return undefined;
   }
 };
 

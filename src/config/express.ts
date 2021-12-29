@@ -13,7 +13,7 @@ import morgan from "morgan";
 
 export interface RouteType {
   name: string;
-  validate?: RequestHandler;
+  validate?: RequestHandler[];
   value: Router;
 }
 
@@ -21,11 +21,7 @@ let app: NExpress = express();
 const routers: RouteType[] = [];
 
 const createRouter = (route: RouteType) => {
-  if (!!route.validate) {
-    app.use(`/${route.name}`, route.validate, route.value);
-    return;
-  }
-  app.use(`/${route.name}`, route.value);
+  app.use(`/${route.name}`, ...(route.validate ?? []), route.value);
 };
 
 const apiChecker = () => {

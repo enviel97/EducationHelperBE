@@ -1,5 +1,9 @@
 import { validationResult } from "express-validator";
 import { NextFunction, Request, Response } from "express";
+import multer from "multer";
+import { error } from "./https";
+import { Token } from "./jsontoken";
+import redis from "../config/redis";
 
 export function validation(req: Request, res: Response, next: NextFunction) {
   const errors = validationResult(req);
@@ -19,4 +23,39 @@ export const defaultAvatar = (name: string) => {
   }${!names[size - 2] ? "" : names[size - 2][0]}`;
 
   return defaultAvatar;
+};
+
+export const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  onDone: any
+) => {
+  if (!file || !file.mimetype.match(/.(jpg|jpeg|png|pdf)$/)) {
+    return onDone(new Error("Only allow file type jpg,jpeg,png or pdf"), false);
+  }
+  onDone(null, true);
+};
+
+export const verifyAccount = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { authenticate } = req.headers;
+  if (!authenticate) {
+    return error(res).UNAUTHORIZED("Token is empty");
+  }
+  const data = Token.decode(`${authenticate}`);
+  if (!data) {
+    return error(res).UNAUTHORIZED("Token is invalid");
+  }
+
+  const result = await redis.read(`${data}`).catch((error) => {
+    console.log(`[Exam verify error]:\n${error}`);
+    return undefined;
+  });
+  if (result === undefined) {
+    return error(res).UNAUTHORIZED("Token is invalid");
+  }
+  return next();
 };

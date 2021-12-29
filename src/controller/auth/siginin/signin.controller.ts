@@ -4,6 +4,7 @@ import { success, error } from "../../../helper/https";
 import { Token } from "../../../helper/jsontoken";
 import { defaultAvatar } from "../../../helper/utils";
 import { UserModel } from "../../../models/user.model";
+import redis from "../../../config/redis";
 
 export const signinWithEmail = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -11,6 +12,7 @@ export const signinWithEmail = async (req: Request, res: Response) => {
   if (!user) return error(res).NOTFOUND("Invalid username or password");
   if (await bcrypt.compare(password, user.password)) {
     const token = Token.create(user.id);
+    await redis.write(user.id, `${token}`);
     return success(res).CREATED({
       token: token,
       name: user.name || user.email,
@@ -20,13 +22,13 @@ export const signinWithEmail = async (req: Request, res: Response) => {
   return error(res).NOTFOUND("Invalid username or password");
 };
 
-export const signinWithGoogleAccount = async (req: Request, res: Response) => {
+export const signinWithGoogle = async (req: Request, res: Response) => {
   const { email } = req.body;
   const user = await UserModel.findOne({ email })
     .lean()
     .catch(() => null);
   if (user) return addGoogleID(req, res, user);
-  else return addUser(req, res);
+  return addUser(req, res);
 };
 
 const addGoogleID = async (req: Request, res: Response, user: any) => {
@@ -43,6 +45,7 @@ const addGoogleID = async (req: Request, res: Response, user: any) => {
     }).catch(() => null);
     if (!result) return error(res).CONFLICT("User can't update");
   }
+  await redis.write(user.id, `${token}`);
   return success(res).ACCEPTED({
     token: token,
     name: user.name ?? user.email,
@@ -67,6 +70,7 @@ const addUser = async (req: Request, res: Response) => {
   });
   if (!result) return error(res).BADREQUEST("Can't add google account");
   const token = Token.create(user.id);
+  await redis.write(user.id, `${token}`);
   return success(res).ACCEPTED({
     token: token,
     name: user.name ?? user.email,
