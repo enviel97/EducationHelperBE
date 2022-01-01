@@ -34,6 +34,7 @@ export default class Classroom {
         ...classroom.toObject(),
         members: classroom.members.map((member) => {
           return {
+            uid: member.uid,
             firstName: member.firstName,
             lastName: member.lastName,
             gender: member.gender,
