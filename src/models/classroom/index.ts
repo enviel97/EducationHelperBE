@@ -29,7 +29,19 @@ export default class Classroom {
       return null;
     });
     if (!result) return Promise.reject("Somthing wrong with classroom data");
-    return result;
+    return result.map((classroom) => {
+      return {
+        ...classroom.toObject(),
+        members: classroom.members.map((member) => {
+          return {
+            firstName: member.firstName,
+            lastName: member.lastName,
+            gender: member.gender,
+            avatar: defaultAvatar(member.lastName),
+          };
+        }),
+      };
+    });
   }
 
   public async create(accountId: string) {
@@ -55,16 +67,7 @@ export default class Classroom {
       return null;
     });
     if (!result) return Promise.reject("Can't get classroom");
-    return {
-      ...result.toObject(),
-      members: result.members.map((member) => {
-        return {
-          firstname: member.firstName,
-          lastname: member.lastName,
-          avatar: defaultAvatar(member.lastName),
-        };
-      }),
-    };
+    return result;
   }
 
   public async update(id: string) {

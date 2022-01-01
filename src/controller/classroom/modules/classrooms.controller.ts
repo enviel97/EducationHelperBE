@@ -69,7 +69,6 @@ export const getAllClassroom = async (req: Request, res: Response) => {
   const classroom = new Classroom();
   const data = Token.decode(`${req.headers.authenticate}`)!;
   const result = await classroom.findAll(data, sort).catch((err) => {
-    console.log("abc");
     error(res).BADREQUEST(err);
     return null;
   });
