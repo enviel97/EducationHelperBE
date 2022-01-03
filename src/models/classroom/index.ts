@@ -38,7 +38,6 @@ export default class Classroom {
             firstName: member.firstName,
             lastName: member.lastName,
             gender: member.gender,
-            avatar: defaultAvatar(member.lastName),
           };
         }),
       };
