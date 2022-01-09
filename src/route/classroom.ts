@@ -6,6 +6,7 @@ import {
   getMember,
   getClassroom,
   updateNameClassroom,
+  deleteClassroom,
   getAllClassroom,
   searchClassroom,
   updateMember,
@@ -20,6 +21,7 @@ router.get("/", getAllClassroom);
 router.get("/search", searchClassroom);
 router.get("/:id", getClassroom);
 router.put("/update/:id", updateNameClassroom);
+router.delete("/:id", deleteClassroom);
 
 router.get("/:id/members", getMember);
 router.put("/:id/members", addMember);

@@ -80,6 +80,15 @@ export default class Classroom {
     return result;
   }
 
+  public async delete(id: string) {
+    const result = await Modal.findByIdAndDelete(id).catch((err) => {
+      console.log(`[Delete classroom]: ${err}`);
+      return null;
+    });
+    if (!result) return Promise.reject("Can't delete classroom");
+    return result;
+  }
+
   public async search(query: object, sorted?: Sorted) {
     const result = await Modal.find(query, null, { sort: sorted }).catch(
       (err) => {

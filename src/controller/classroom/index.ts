@@ -4,6 +4,7 @@ export {
   updateNameClassroom,
   getAllClassroom,
   searchClassroom,
+  deleteClassroom,
   // member
   addMember,
   getMember,

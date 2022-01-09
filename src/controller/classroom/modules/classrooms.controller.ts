@@ -76,6 +76,17 @@ export const getAllClassroom = async (req: Request, res: Response) => {
   return success(res).CREATED(result);
 };
 
+export const deleteClassroom = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const classroom = new Classroom();
+  const result = await classroom.delete(id).catch((err) => {
+    error(res).BADREQUEST(err);
+    return null;
+  });
+  if (!result) return;
+  return success(res).OK(result);
+};
+
 export const getMember = async (req: Request, res: Response) => {
   const { id } = req.params;
   const classroom = new Classroom();
