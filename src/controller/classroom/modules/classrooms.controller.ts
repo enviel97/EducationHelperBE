@@ -36,7 +36,7 @@ export const updateNameClassroom = async (req: Request, res: Response) => {
     return null;
   });
   if (!result) return;
-  return success(res).CREATED(result);
+  return success(res).CREATED({ ...result.toObject(), name: name });
 };
 
 export const searchClassroom = async (req: Request, res: Response) => {
