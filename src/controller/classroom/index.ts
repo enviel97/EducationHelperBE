@@ -5,9 +5,13 @@ export {
   getAllClassroom,
   searchClassroom,
   deleteClassroom,
-  // member
+} from "./modules/classrooms.controller";
+
+export {
   addMember,
   getMember,
   updateMember,
   deleteMember,
-} from "./modules/classrooms.controller";
+} from "./modules/member.controller";
+
+export { getLimit } from "./modules/classroom_home.controller";

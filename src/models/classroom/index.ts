@@ -100,6 +100,29 @@ export default class Classroom {
     return result;
   }
 
+  public async getWith(creatorId: string, limit: number, sorted?: Sorted) {
+    const result = await Modal.find({ creatorId }, null, {
+      sort: sorted,
+      limit: limit,
+    }).catch((err) => {
+      console.log(`[Error get limit classroom]:\n${err}`);
+      return null;
+    });
+    if (!result) return Promise.reject("Somthing wrong with classroom data");
+    return result.map((classroom) => {
+      return {
+        ...classroom.toObject(),
+        members: classroom.members.map((member) => {
+          return {
+            uid: member.uid,
+            firstName: member.firstName,
+            lastName: member.lastName,
+            gender: member.gender,
+          };
+        }),
+      };
+    });
+  }
   //#endregion
   //#region memeber
 
