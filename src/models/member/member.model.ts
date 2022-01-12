@@ -36,9 +36,7 @@ MemberSchema.post("insertMany", async function (res, next) {
 
 MemberSchema.post("findOneAndDelete", async function (res, next) {
   const idMembers = res._id.toString();
-  console.log(idMembers);
   const idClassroom = res.classId.toString();
-  console.log(idClassroom);
   await classroomModel
     .findByIdAndUpdate(idClassroom, { $pull: { members: idMembers } })
     .then((value) => console.log("[Update members]: " + value))

@@ -1,9 +1,6 @@
-import { IClassroomSchema } from "./classroom.types";
 import Modal from "./classroom.model";
-import { defaultAvatar } from "../../helper/utils";
 import { Sorted } from "../../helper/type.helper";
-import { v4 as uuid } from "uuid";
-import { isMemberEqual } from "../../controller/classroom/ultils/ultils";
+import MemberModal from "../member/member.model";
 
 interface Props {
   name?: string;
@@ -29,8 +26,19 @@ export default class Classroom {
       return null;
     });
     if (!result) return Promise.reject("Somthing wrong with classroom data");
-    return result.map((classroom) => {
-      return classroom.toObject();
+
+    const members = await Promise.all(
+      result.map(async (classroom) => {
+        const member = await MemberModal.find(
+          { classId: classroom.id ?? classroom._id },
+          { lastName: 1, firstName: 1 }
+        );
+        return member;
+      })
+    );
+
+    return result.map((classroom, index) => {
+      return { ...classroom.toObject(), members: members[index] };
     });
   }
 
@@ -47,6 +55,7 @@ export default class Classroom {
       return null;
     });
     if (!result) return Promise.reject("Can't create classroom");
+
     return result;
   }
 
