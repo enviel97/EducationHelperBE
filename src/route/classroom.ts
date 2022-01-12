@@ -7,10 +7,6 @@ import {
   deleteClassroom,
   getAllClassroom,
   searchClassroom,
-  getMember,
-  addMember,
-  updateMember,
-  deleteMember,
   getLimit,
 } from "../controller/classroom";
 import { verifyAccount } from "../helper/utils";
@@ -24,11 +20,6 @@ router.get("/search", searchClassroom);
 router.get("/:id", getClassroom);
 router.put("/update/:id", updateNameClassroom);
 router.delete("/:id", deleteClassroom);
-
-router.get("/:id/members", getMember);
-router.put("/:id/members", addMember);
-router.put("/:id/members/update", updateMember);
-router.delete("/:id/members", deleteMember);
 
 export default express.inject({
   name: "classrooms",
