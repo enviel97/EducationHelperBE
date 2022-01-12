@@ -31,7 +31,7 @@ export default class Classroom {
       result.map(async (classroom) => {
         const member = await MemberModal.find(
           { classId: classroom.id ?? classroom._id },
-          { lastName: 1, firstName: 1 }
+          { lastName: 1, firstName: 1, mail: 1, phoneNumber: 1 }
         );
         return member;
       })
