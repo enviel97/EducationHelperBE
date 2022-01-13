@@ -5,7 +5,6 @@ import { Sorted } from "../../../helper/type.helper";
 import Classroom from "../../../models/classroom";
 
 export const getLimit = async (req: Request, res: Response) => {
-  console.log("123123123");
   const sorted = req.query.sorted as string;
   const flow = (req.query.flow as string) === "desc" ? -1 : 1;
   const limit = Number.parseInt(req.query.limit as string);
