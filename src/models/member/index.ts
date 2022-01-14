@@ -11,7 +11,7 @@ export default class Member {
 
   public async findAll(id: string) {
     const result = await Modal.find({ classId: id }, null, {
-      sort: { firstName: -1, lastName: -1 },
+      sort: { firstName: 1, lastName: 1 },
     }).catch((err) => {
       console.log(`[Error get all members]:\n${err}`);
       return null;
