@@ -1,6 +1,6 @@
-import { ObjectId, Schema } from "mongoose";
+import { Schema } from "mongoose";
 import mongoose from "../../config/mongose";
-import { IMemeberSchema, Member } from "./member.types";
+import { IMemeberSchema } from "./member.types";
 import classroomModel from "../classroom/classroom.model";
 
 const MemberSchema = new Schema<IMemeberSchema>({
@@ -28,7 +28,7 @@ MemberSchema.post("save", async function (next) {
 MemberSchema.post("insertMany", async function (res, next) {
   const members = res.map((mem: any) => mem._id.toString());
   await classroomModel
-    .updateMany({ id: res[0].classId }, { $push: { members } })
+    .findByIdAndUpdate(res[0].classId, { $push: { members } })
     .then((value) => console.log("[Update members]: " + value))
     .catch((error) => console.log("[Update error members]" + error))
     .finally(next);

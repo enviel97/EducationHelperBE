@@ -16,9 +16,8 @@ const ClassroomSchema = new Schema<IClassroomSchema>(
 );
 
 ClassroomSchema.post("findOneAndDelete", async function (res, next) {
-  const classId: string = res._id.toString;
+  const classId: string = res._id.toString();
   const userId: string = res.creatorId;
-  console.log(res);
   await MemberModel.deleteMany({ classId: classId })
     .then((value) => console.log(value))
     .catch((error) => console.log(error))
