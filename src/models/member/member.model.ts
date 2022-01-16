@@ -44,4 +44,13 @@ MemberSchema.post("findOneAndDelete", async function (res, next) {
     .finally(next);
 });
 
+MemberSchema.post("deleteMany", async function (res, next) {
+  const classId = res[0].classId.toString();
+  await classroomModel
+    .findByIdAndUpdate({ classId }, { $set: { members: [] } })
+    .then((value) => console.log("[Update classroom]: " + value))
+    .catch((error) => console.log("[Update error classroom]" + error))
+    .finally(next);
+});
+
 export default mongoose.client.model<IMemeberSchema>("Member", MemberSchema);

@@ -6,6 +6,7 @@ import {
   insertMembers,
   updateMember,
   deleteMember,
+  deleteMembers,
 } from "../controller/members";
 import { verifyAccount } from "../helper/utils";
 
@@ -16,6 +17,7 @@ router.put("/create/:idClassroom", insertMember);
 router.put("/creates/:idClassroom", insertMembers);
 router.put("/update/:idMember", updateMember);
 router.delete("/:idMembers", deleteMember);
+router.delete("/clear/:idClassroom", deleteMembers);
 
 export default express.inject({
   name: "members",

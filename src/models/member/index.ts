@@ -99,7 +99,7 @@ export default class Member {
         return null;
       }
     );
-    if (!result) return Promise.reject("Can't delete member");
+    if (!result) return Promise.reject("Can't delete members");
     return result;
   }
 }

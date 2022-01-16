@@ -108,4 +108,13 @@ export const deleteMember = async (req: Request, res: Response) => {
 };
 
 /// clearAll
-export const deleteMembers = async (req: Request, res: Response) => {};
+export const deleteMembers = async (req: Request, res: Response) => {
+  const { idClassroom } = req.params;
+  const result = await memberRepo.deleteAll(idClassroom).catch((err) => {
+    error(res).BADREQUEST(err);
+    return null;
+  });
+
+  if (!result) return;
+  success(res).CREATED(result);
+};

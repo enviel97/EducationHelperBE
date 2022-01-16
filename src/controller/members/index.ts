@@ -4,4 +4,5 @@ export {
   insertMembers,
   updateMember,
   deleteMember,
+  deleteMembers,
 } from "../members/modules/member.controller";
