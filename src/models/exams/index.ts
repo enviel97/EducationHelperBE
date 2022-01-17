@@ -6,25 +6,33 @@ import {
 import { Token } from "../../helper/jsontoken";
 import { IExam, IQuest } from "./exam.types";
 import Model from "./exam.model";
+import { models } from "mongoose";
 
 interface Props {
   authenticate: string;
   examType: string;
   expirTime: Date;
+  note: string;
+  subject: string;
   file: Express.Multer.File;
 }
 
 export default class ExamModel {
-  constructor(private readonly props: Props) {}
-
+  private props: Props;
+  constructor() {}
+  public static with(props: Props): ExamModel {
+    const model = new ExamModel();
+    model.props = props;
+    return model;
+  }
   private get isImage() {
     const mimetype = this.props.file.mimetype.toLowerCase();
     return mimetype.includes("image");
   }
 
   private async getOffsetContent(): Promise<IQuest[][] | undefined> {
-    const { file } = this.props;
-    if (this.isImage) return undefined;
+    const { file, examType } = this.props;
+    if (this.isImage || examType === "ESSAY") return undefined;
     return await pdfExtractOffset(file.buffer);
   }
 
@@ -38,12 +46,13 @@ export default class ExamModel {
   }
 
   private async createExam(fResponse: FirebaseResponse): Promise<IExam> {
-    const { authenticate, file, examType, expirTime } = this.props;
+    const { authenticate, file, examType, expirTime, note, subject } =
+      this.props;
     const id = Token.decode(`${authenticate}`)!;
     return {
       creatorId: id,
+      subject: subject,
       examType: examType as any,
-      expirTime: expirTime,
       content: {
         name: fResponse.name,
         originName: file.originalname,

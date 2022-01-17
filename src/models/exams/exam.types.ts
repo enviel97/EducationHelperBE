@@ -25,8 +25,8 @@ export interface IContent {
 
 export interface IExam {
   creatorId: string;
+  subject: string;
   examType: ExamType;
-  expirTime: Date;
   content: IContent;
 }
 

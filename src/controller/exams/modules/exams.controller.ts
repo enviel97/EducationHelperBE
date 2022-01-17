@@ -5,8 +5,10 @@ import ExamModel from "../../../models/exams";
 export const createExams = async (req: Request, res: Response) => {
   const file = req.file!;
   const { authenticate } = req.headers;
-  const { expirTime, examType } = req.body;
-  const exams = new ExamModel({
+  const { expirTime, examType, note, subject } = req.body;
+  const exams = ExamModel.with({
+    note,
+    subject,
     file,
     expirTime,
     examType,

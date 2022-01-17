@@ -32,14 +32,14 @@ const Content = new Schema<IContent>(
 
 const ExamSchema = new Schema<IExamSchema>(
   {
-    creatorId: { type: String },
+    creatorId: { type: String, required: true },
+    subject: { type: String, default: "" },
     examType: {
       type: String,
       enum: ExamType,
       default: ExamType.ESSAY,
       uppercase: true,
     },
-    expirTime: { type: Date, default: moment().add(1, "week").toDate() },
     content: { type: Content },
   },
   { timestamps: true }

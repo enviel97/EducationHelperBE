@@ -5,8 +5,7 @@ import { createExams, validator } from "../controller/exams";
 const router = Router();
 
 // signup
-router.post("/create/pdf", ...validator.verify, createExams);
-router.post("/create/image", ...validator.verify, createExams);
+router.post("/create", ...validator.verify, createExams);
 
 export default express.inject({
   name: "exams",
