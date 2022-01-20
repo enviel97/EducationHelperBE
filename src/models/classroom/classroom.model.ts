@@ -23,8 +23,8 @@ ClassroomSchema.post("findOneAndDelete", async function (res, next) {
     .catch((error) => console.log(error))
     .finally(() => next());
 
-  await UserModel.findByIdAndUpdate(classId, {
-    $pull: { classrooms: userId },
+  await UserModel.findByIdAndUpdate(userId, {
+    $pull: { classrooms: classId },
   })
     .then((value) => console.log("[Delete classrooms]: " + value))
     .catch((error) => console.log("[Delete error classrooms]" + error))
@@ -33,8 +33,8 @@ ClassroomSchema.post("findOneAndDelete", async function (res, next) {
 
 ClassroomSchema.post("save", async function (res, next) {
   const classroom = res;
-  await UserModel.findByIdAndUpdate(classroom.id ?? classroom._id, {
-    $push: { members: [classroom.creatorId] },
+  await UserModel.findByIdAndUpdate(classroom.creatorId, {
+    $push: { members: [classroom.id ?? classroom._id] },
   })
     .then((value) => console.log("[Create user]: " + value))
     .catch((error) => console.log("[Create user error]" + error))

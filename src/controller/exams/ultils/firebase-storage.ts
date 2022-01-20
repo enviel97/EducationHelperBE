@@ -12,7 +12,14 @@ export const storeMediaToFirebase = async (
   file: Express.Multer.File
 ): Promise<FirebaseResponse> => {
   const date = moment();
-  const type = file.mimetype.includes("image") ? "Image" : "PDF";
+  console.log(file.mimetype);
+  const type = file.mimetype.includes("image")
+    ? "Image"
+    : file.mimetype.includes("pdf")
+    ? "PDF"
+    : file.mimetype.includes("rar")
+    ? "RAR"
+    : "ZIP";
   try {
     const bucket = firebase.getStorage();
     const name = `${type}/${type}-${uuid()}-${date.format("MM-YYYY")}`;
@@ -45,5 +52,29 @@ export const storeMediaToFirebase = async (
   } catch (error) {
     console.log(`[ERROR UPLOAD EXAMS]:\n${error} `);
     return Promise.reject("Can't public exams on server media");
+  }
+};
+
+export const removeMediaInFilebase = async (name: string) => {
+  try {
+    const bucket = firebase.getStorage();
+    const removeNotification = await bucket
+      .file(name)
+      .delete()
+      .then(() => {
+        console.log(`[REMOVE EXAMS]: Successfully`);
+        return name;
+      })
+      .catch((error) => {
+        console.log(`[REMOVE EXAMS]: ${error}`);
+        return null;
+      });
+    if (!removeNotification) {
+      return Promise.reject("Can't remove exams to server media");
+    }
+    return removeNotification;
+  } catch (error) {
+    console.log(`[ERROR REMOVE EXAMS]:\n${error} `);
+    return Promise.reject("Can't remove exams on server media");
   }
 };

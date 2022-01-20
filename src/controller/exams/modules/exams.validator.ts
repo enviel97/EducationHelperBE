@@ -18,4 +18,6 @@ const verifyFile = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export default { verify: [verifyAccount, verifyFile] };
+export default {
+  verify: [verifyAccount, verifyFile],
+};

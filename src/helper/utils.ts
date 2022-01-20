@@ -1,6 +1,5 @@
 import { validationResult } from "express-validator";
 import { NextFunction, Request, Response } from "express";
-import multer from "multer";
 import { error } from "./https";
 import { Token } from "./jsontoken";
 import redis from "../config/redis";
@@ -26,11 +25,11 @@ export const defaultAvatar = (name: string) => {
 };
 
 export const fileFilter = (
-  req: Request,
+  _: Request,
   file: Express.Multer.File,
   onDone: any
 ) => {
-  if (!file || !file.mimetype.match(/.(jpg|jpeg|png|pdf)$/)) {
+  if (!file || !file.mimetype.match(/.(jpg|jpeg|png|pdf|rar|zip)$/)) {
     return onDone(new Error("Only allow file type jpg,jpeg,png or pdf"), false);
   }
   onDone(null, true);
