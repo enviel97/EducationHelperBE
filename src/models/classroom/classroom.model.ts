@@ -34,7 +34,7 @@ ClassroomSchema.post("findOneAndDelete", async function (res, next) {
 ClassroomSchema.post("save", async function (res, next) {
   const classroom = res;
   await UserModel.findByIdAndUpdate(classroom.creatorId, {
-    $push: { members: [classroom.id ?? classroom._id] },
+    $addToSet: { members: [classroom.id ?? classroom._id] },
   })
     .then((value) => console.log("[Create user]: " + value))
     .catch((error) => console.log("[Create user error]" + error))

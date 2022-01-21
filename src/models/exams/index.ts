@@ -158,11 +158,13 @@ export default class Exam {
     });
     if (!exam) return Promise.reject("Can't found exam");
 
-    if (!subject && exam.subject !== subject) {
+    if (!!subject && exam.subject !== subject) {
+      console.log("file" + file);
       exam.subject = subject!;
     }
 
-    if (!file) {
+    if (!!file) {
+      console.log("file" + file);
       const content = await this.getFirebaseResponse(file!).catch((error) => {
         console.log(error);
         return undefined;

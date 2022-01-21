@@ -18,6 +18,21 @@ const verifyFile = (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
+const filterFile = (req: Request, res: Response, next: NextFunction) => {
+  if (!!req.files) {
+    error(res).BADREQUEST("Allow single files");
+    return;
+  }
+  const storage = multer.memoryStorage();
+  const upload = multer({ storage, fileFilter }).single("content");
+  return upload(req, res, (err) => {
+    if (err instanceof Error) return error(res).BADREQUEST(err.message);
+    if (err instanceof MulterError) return res.send(err);
+    next();
+  });
+};
+
 export default {
   verify: [verifyAccount, verifyFile],
+  filterFile,
 };

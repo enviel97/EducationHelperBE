@@ -20,7 +20,7 @@ router.get("/search", searchExams);
 router.get("/:id", getExams);
 router.delete("/:id", deleteExams);
 router.post("/create", ...validator.verify, createExams);
-router.put("/update/:id", updateExams);
+router.post("/update/:id", validator.filterFile, updateExams);
 
 export default express.inject({
   name: "exams",
