@@ -26,11 +26,15 @@ export const defaultAvatar = (name: string) => {
 
 export const fileFilter = (
   _: Request,
-  file: Express.Multer.File,
+  file: Express.Multer.File | undefined,
   onDone: any
 ) => {
-  if (!file || !file.mimetype.match(/.(jpg|jpeg|png|pdf|rar|zip)$/)) {
-    return onDone(new Error("Only allow file type jpg,jpeg,png or pdf"), false);
+  const regex = new RegExp(/.(jpg|jpeg|png|pdf|rar|zip)$/);
+  if (!file || !regex.test(file.originalname)) {
+    return onDone(
+      new Error("Only allow file type jpg, jpeg, png, pdf, rar or zip"),
+      false
+    );
   }
   onDone(null, true);
 };

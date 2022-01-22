@@ -19,7 +19,7 @@ const verifyFile = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const filterFile = (req: Request, res: Response, next: NextFunction) => {
-  if (!!req.files) {
+  if (req.files?.length ?? 0 > 1) {
     error(res).BADREQUEST("Allow single files");
     return;
   }

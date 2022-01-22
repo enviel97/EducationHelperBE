@@ -28,10 +28,7 @@ export default class Exam {
   private async getOffsetContent(): Promise<IQuest[][] | undefined> {
     const { file, examType } = this.props;
     const mimetype = this.props.file.mimetype.toLowerCase();
-    if (
-      mimetype.includes("pdf") &&
-      examType.toLocaleUpperCase() !== ExamType.QUIZ
-    )
+    if (mimetype.includes("pdf") && examType === ExamType.QUIZ)
       return await pdfExtractOffset(file.buffer);
     return undefined;
   }
@@ -159,28 +156,26 @@ export default class Exam {
     if (!exam) return Promise.reject("Can't found exam");
 
     if (!!subject && exam.subject !== subject) {
-      console.log("file" + file);
       exam.subject = subject!;
     }
 
     if (!!file) {
-      console.log("file" + file);
-      const content = await this.getFirebaseResponse(file!).catch((error) => {
+      const content = await this.getFirebaseResponse(file).catch((error) => {
         console.log(error);
         return undefined;
       });
-      if (!content) {
-        await removeMediaInFilebase(exam.content.name)
-          .then(() => {
-            exam!.content.originName = content!.name;
-            exam!.content.download = content!.download;
-            exam!.content.public = content!.public;
-          })
-          .catch((error) => console.log(error));
-      }
+      if (!content) return Promise.reject("Can't storage new exam");
+      const remove = await removeMediaInFilebase(exam.content.name).catch(
+        (error) => null
+      );
+      if (!remove) return Promise.reject("Can't remove exam");
+      exam.content.originName = file.filename ?? file.originalname;
+      exam.content.name = content!.name;
+      exam.content.download = content!.download;
+      exam.content.public = content!.public;
     }
     const result = await exam.save().catch((error) => {
-      console.log("[Error]: can't update exam");
+      console.log(`[Error]: ${error}`);
       return null;
     });
     if (!exam) return Promise.reject("Can't update exam");

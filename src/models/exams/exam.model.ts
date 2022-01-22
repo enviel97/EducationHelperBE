@@ -54,22 +54,20 @@ ExamSchema.index({
 ExamSchema.post("save", async function (res, next) {
   const exam = res;
   await UserModel.findByIdAndUpdate(exam.creatorId, {
-    $addToSet: { exams: [exam.id ?? exam._id] },
+    $addToSet: { exams: exam.id ?? exam._id },
   })
-    .then((value) => console.log("[Create user]: " + value))
-    .catch((error) => console.log("[Create user error]" + error))
+    .then(() => console.log("[Create exams id in user]: success"))
+    .catch((error) => console.log("[Error - Create exams id in user]" + error))
     .finally(next);
 });
 
 ExamSchema.post("findOneAndDelete", async function (res, next) {
-  const classId: string = res._id.toString();
-  const userId: string = res.creatorId;
-
-  await UserModel.findByIdAndUpdate(userId, {
-    $pull: { classrooms: classId },
+  const exam = res;
+  await UserModel.findByIdAndUpdate(res.creatorId, {
+    $pull: { exams: exam.id ?? exam._id },
   })
-    .then((value) => console.log("[Delete classrooms]: " + value))
-    .catch((error) => console.log("[Delete error classrooms]" + error))
+    .then(() => console.log("[Delete exams id in user]: success"))
+    .catch((error) => console.log("[Error - Delete exams id in user]" + error))
     .finally(next);
 });
 

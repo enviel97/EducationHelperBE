@@ -8,18 +8,25 @@ export interface FirebaseResponse {
   public: string;
 }
 
+const getType = (filename: string) => {
+  const file = filename.split(".");
+
+  switch (file[file.length - 1].toLowerCase()) {
+    case "pdf":
+      return "PDF";
+    case "rar":
+      return "RAR";
+    case "zip":
+      return "ZIP";
+    default:
+      return "Image";
+  }
+};
 export const storeMediaToFirebase = async (
   file: Express.Multer.File
 ): Promise<FirebaseResponse> => {
   const date = moment();
-  console.log(file.mimetype);
-  const type = file.mimetype.includes("image")
-    ? "Image"
-    : file.mimetype.includes("pdf")
-    ? "PDF"
-    : file.mimetype.includes("rar")
-    ? "RAR"
-    : "ZIP";
+  const type = getType(file.originalname);
   try {
     const bucket = firebase.getStorage();
     const name = `${type}/${type}-${uuid()}-${date.format("MM-YYYY")}`;
