@@ -45,7 +45,8 @@ MemberSchema.post("findOneAndDelete", async function (res, next) {
 });
 
 MemberSchema.post("deleteMany", async function (res, next) {
-  const classId = res[0].classId.toString();
+  const classId = res[0]?.classId.toString() ?? undefined;
+  if (!classId) return;
   await classroomModel
     .findByIdAndUpdate({ classId }, { $set: { members: [] } })
     .then((value) => console.log("[Update classroom]: " + value))

@@ -3,6 +3,10 @@ import mongoose from "../config/mongose";
 import bcrypt from "../helper/bcrypt";
 import { TimeStamp } from "../helper/type.helper";
 
+interface IExam {
+  id: string;
+  expiredDate: string;
+}
 export interface IUser extends TimeStamp, Document {
   serviceId: { [key: string]: string };
   name: string;
@@ -12,8 +16,16 @@ export interface IUser extends TimeStamp, Document {
   avatar: string;
   userType: string;
   classrooms: string[];
-  exams: string[];
+  exams: IExam[];
 }
+
+const Exam = new Schema(
+  {
+    id: { type: String, default: "" },
+    expiredDate: { type: String, default: "" },
+  },
+  { _id: false }
+);
 
 const ServiceId = new Schema(
   {
@@ -34,7 +46,7 @@ const UserSchema = new Schema(
     avatar: { type: String },
     serviceId: { type: ServiceId, default: {} },
     classrooms: { type: [String], default: [] },
-    exams: { type: [String], default: [] },
+    exams: { type: [Exam], default: [] },
   },
   { timestamps: true }
 );

@@ -1,4 +1,3 @@
-import { Sorted } from "../../helper/type.helper";
 import Modal from "./member.model";
 import { Member as IMember } from "./member.types";
 

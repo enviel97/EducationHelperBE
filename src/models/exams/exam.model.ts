@@ -51,24 +51,8 @@ ExamSchema.index({
   "content.name": "text",
 });
 
-ExamSchema.post("save", async function (res, next) {
-  const exam = res;
-  await UserModel.findByIdAndUpdate(exam.creatorId, {
-    $addToSet: { exams: exam.id ?? exam._id },
-  })
-    .then(() => console.log("[Create exams id in user]: success"))
-    .catch((error) => console.log("[Error - Create exams id in user]" + error))
-    .finally(next);
-});
-
 ExamSchema.post("findOneAndDelete", async function (res, next) {
-  const exam = res;
-  await UserModel.findByIdAndUpdate(res.creatorId, {
-    $pull: { exams: exam.id ?? exam._id },
-  })
-    .then(() => console.log("[Delete exams id in user]: success"))
-    .catch((error) => console.log("[Error - Delete exams id in user]" + error))
-    .finally(next);
+  // Todo : remove topic
 });
 
 export default mongoose.client.model<IExamSchema>("Exam", ExamSchema);
