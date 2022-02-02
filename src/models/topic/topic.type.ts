@@ -1,19 +1,12 @@
 import { TimeStamp } from "../../helper/type.helper";
-import { StatusAnswer } from "../answers/answers.type";
-
-export interface IAnswer {
-  id: string;
-  memberId: string;
-  status: StatusAnswer;
-  grade: number;
-}
 
 export interface ITopic {
-  classId: string;
-  examId: string;
+  classroom: string;
+  exam: string;
   creatorId: string;
-  expiredDate: string;
-  answers: IAnswer[];
+  expiredDate: Date;
+  note: string;
+  answers: string[];
 }
 
 export type ITopicSchema = ITopic & Document & TimeStamp;

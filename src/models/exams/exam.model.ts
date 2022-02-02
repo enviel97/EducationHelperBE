@@ -32,7 +32,7 @@ const Content = new Schema<IContent>(
 
 const ExamSchema = new Schema<IExamSchema>(
   {
-    creatorId: { type: String, required: true },
+    creatorId: { type: String, required: true, select: false },
     subject: { type: String, default: "" },
     examType: {
       type: String,

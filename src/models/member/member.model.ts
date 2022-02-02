@@ -4,7 +4,7 @@ import { IMemeberSchema } from "./member.types";
 import classroomModel from "../classroom/classroom.model";
 
 const MemberSchema = new Schema<IMemeberSchema>({
-  classId: { type: String, required: true },
+  classId: { type: String, required: true, select: false },
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   gender: { type: String, default: "male", lowercase: true },
@@ -20,7 +20,7 @@ MemberSchema.post("save", async function (next) {
     .findByIdAndUpdate(member.classId, {
       $push: { members: [member.id] },
     })
-    .then((value) => console.log("[Update member]: " + value))
+
     .catch((error) => console.log("[Update member]" + error))
     .finally(next);
 });
@@ -29,7 +29,6 @@ MemberSchema.post("insertMany", async function (res, next) {
   const members = res.map((mem: any) => mem._id.toString());
   await classroomModel
     .findByIdAndUpdate(res[0].classId, { $push: { members } })
-    .then((value) => console.log("[Update members]: " + value))
     .catch((error) => console.log("[Update error members]" + error))
     .finally(next);
 });
@@ -39,7 +38,6 @@ MemberSchema.post("findOneAndDelete", async function (res, next) {
   const idClassroom = res.classId.toString();
   await classroomModel
     .findByIdAndUpdate(idClassroom, { $pull: { members: idMembers } })
-    .then((value) => console.log("[Update members]: " + value))
     .catch((error) => console.log("[Update error members]" + error))
     .finally(next);
 });
@@ -49,7 +47,6 @@ MemberSchema.post("deleteMany", async function (res, next) {
   if (!classId) return;
   await classroomModel
     .findByIdAndUpdate({ classId }, { $set: { members: [] } })
-    .then((value) => console.log("[Update classroom]: " + value))
     .catch((error) => console.log("[Update error classroom]" + error))
     .finally(next);
 });

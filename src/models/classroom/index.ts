@@ -21,25 +21,23 @@ export default class Classroom {
   public async findAll(creatorId: string, sorted?: Sorted) {
     const result = await Modal.find({ creatorId }, null, {
       sort: sorted,
-    }).catch((err) => {
-      console.log(`[Error get all classroom]:\n${err}`);
-      return null;
-    });
-    if (!result) return Promise.reject("Somthing wrong with classroom data");
-
-    const members = await Promise.all(
-      result.map(async (classroom) => {
-        const member = await MemberModal.find(
-          { classId: classroom.id ?? classroom._id },
-          { lastName: 1, firstName: 1, mail: 1, phoneNumber: 1 }
-        );
-        return member;
+    })
+      .populate({
+        path: "members",
+        select: {
+          _id: 1,
+          lastName: 1,
+          firstName: 1,
+          mail: 1,
+          phoneNumber: 1,
+        },
       })
-    );
-
-    return result.map((classroom, index) => {
-      return { ...classroom.toObject(), members: members[index] };
-    });
+      .catch((err) => {
+        console.log(`[Error get all classroom]:\n${err}`);
+        return null;
+      });
+    if (!result) return Promise.reject("Somthing wrong with classroom data");
+    return result;
   }
 
   public async create(accountId: string) {
