@@ -40,7 +40,6 @@ export default class Topic {
         {
           path: "classroom",
           select: "name members",
-          populate: { path: "members" },
         },
         { path: "exam" },
       ])
