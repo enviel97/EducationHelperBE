@@ -5,6 +5,7 @@ export {
   update,
   remove,
   search,
+  getMembers,
 } from "./modules/topic.controller";
 export { getTop } from "./modules/topic.home.controller";
 

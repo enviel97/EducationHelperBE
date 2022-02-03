@@ -144,4 +144,22 @@ export default class Topic {
     if (!result) return Promise.reject("Somthhing wrong when search topic");
     return result;
   }
+
+  public async getMembers(id: string) {
+    const result = await Modal.findById(id)
+      .populate([
+        {
+          path: "classroom",
+          select: "members",
+          populate: { path: "members" },
+        },
+      ])
+      .select({ classroom: 1 })
+      .catch((err) => {
+        console.log(`[Error get topic]:\n${err}`);
+        return null;
+      });
+    if (!result) return Promise.reject("Somthing wrong with topic data");
+    return result;
+  }
 }

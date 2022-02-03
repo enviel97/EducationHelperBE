@@ -89,3 +89,15 @@ export const search = async (req: Request, res: Response) => {
   if (!result) return;
   return success(res).ACCEPTED(result);
 };
+
+export const getMembers = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await repo.getMembers(id).catch((err) => {
+    error(res).BADREQUEST(err);
+    return null;
+  });
+  if (!result) return;
+  return success(res).ACCEPTED(result);
+};
+
+// TODO: grade exams
