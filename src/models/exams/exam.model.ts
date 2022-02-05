@@ -1,7 +1,9 @@
 import { Schema } from "mongoose";
 import mongoose from "../../config/mongose";
 import { ExamType, IContent, IExamSchema, IPoint, IQuest } from "./exam.types";
-import { UserModel } from "../user.model";
+import TopicModel from "../topic/topic.model";
+import topic from "../../route/topic";
+import classroomModel from "../classroom/classroom.model";
 
 const Point = new Schema<IPoint>(
   {
@@ -52,7 +54,22 @@ ExamSchema.index({
 });
 
 ExamSchema.post("findOneAndDelete", async function (res, next) {
-  // Todo : remove topic
+  const examId: string = res._id.toString();
+  const topics = await TopicModel.find({ exam: examId }).catch((error) => {
+    console.log(`[Topic Exam error] ${error}`);
+    return null;
+  });
+
+  if ((!topics || topics.length === 0) ?? true) return;
+  Promise.all([
+    topics.forEach(async () => {
+      await TopicModel.findOneAndDelete({ exam: examId }).catch((error) =>
+        console.log(`[Topic-Exam error] ${error}`)
+      );
+    }),
+  ]).catch((err) => {
+    console.log(`[Exam-topics remove error]: ${err} `);
+  });
 });
 
 export default mongoose.client.model<IExamSchema>("Exam", ExamSchema);

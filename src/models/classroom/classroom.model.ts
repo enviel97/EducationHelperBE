@@ -2,6 +2,7 @@ import { Schema } from "mongoose";
 import mongoose from "../../config/mongose";
 import { IClassroomSchema } from "./classroom.types";
 import MemberModel from "../member/member.model";
+import TopicModel from "../topic/topic.model";
 
 const ClassroomSchema = new Schema<IClassroomSchema>(
   {
@@ -24,8 +25,11 @@ ClassroomSchema.index({
 ClassroomSchema.post("findOneAndDelete", async function (res, next) {
   const classId: string = res._id.toString();
   await MemberModel.deleteMany({ classId: classId })
-    .then((value) => console.log(value))
-    .catch((error) => console.log(error))
+    .catch((error) => console.log(`[Topic Member error] ${error}`))
+    .finally(() => next());
+
+  await TopicModel.deleteMany({ classroom: classId })
+    .catch((error) => console.log(`[Topic Classroom error] ${error}`))
     .finally(() => next());
 });
 

@@ -106,24 +106,17 @@ export default class Topic {
   }
 
   public async search(query: string, date?: { from: Date; to: Date }) {
-    let expiredDate = {};
-    if (!!date) {
-      expiredDate = {
-        $gte: date.from,
-        $lt: date.to,
-      };
-    }
-    const result = await Modal.find(expiredDate)
-      .populate([
-        {
-          path: "classroom",
-          populate: {
-            path: "members",
-            model: "Member",
-          },
-        },
-        { path: "exam" },
-      ])
+    const result = await Modal.find(
+      !!date
+        ? {
+            expiredDate: {
+              $gte: date.from,
+              $lt: date.to,
+            },
+          }
+        : {}
+    )
+      .populate([{ path: "classroom exam" }])
       .then((exam) => {
         const reg = new RegExp(query);
         return exam.filter(
