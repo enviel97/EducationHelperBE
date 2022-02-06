@@ -1,5 +1,5 @@
 import { PDFExtract, PDFExtractText } from "pdf.js-extract";
-import { IQuest } from "../../../models/exams/exam.types";
+import { IQuest } from "../../../helper/type.helper";
 
 const rexAnswer = new RegExp(/^(A|B|C|D){1}?\:$/g);
 

@@ -1,4 +1,4 @@
-import { IContent } from "../exams/exam.types";
+import { IContent, TimeStamp } from "../../helper/type.helper";
 
 export enum StatusAnswer {
   EMPTY = "empty",
@@ -7,10 +7,13 @@ export enum StatusAnswer {
 }
 
 export interface IAnswer {
-  topicId: string;
-  memberId: string;
+  topic: string;
+  member: string;
   status: StatusAnswer;
   content: IContent;
-  grade: string;
+  grade: number;
   note: string;
+  review: string;
 }
+
+export type IAnswerSchema = IAnswer & TimeStamp & Document;

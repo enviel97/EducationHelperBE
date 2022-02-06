@@ -4,10 +4,10 @@ import {
   storeMediaToFirebase,
 } from "../../controller/exams/ultils";
 import { Token } from "../../helper/jsontoken";
-import { ExamType, IQuest } from "./exam.types";
+import { ExamType } from "./exam.types";
 import Model from "./exam.model";
 import { removeMediaInFilebase } from "../../controller/exams/ultils/firebase-storage";
-import { Sorted } from "../../helper/type.helper";
+import { IQuest, Sorted } from "../../helper/type.helper";
 
 interface Props {
   authenticate: string;
@@ -47,7 +47,7 @@ export default class Exam {
     const { authenticate, file, examType, subject } = this.props;
     try {
       const fResponse = await this.getFirebaseResponse(file).catch((error) => {
-        console.log(error);
+        console.log(`EXAM CREATE ERROR: ${error}`);
         return null;
       });
       if (!fResponse) return Promise.reject("Can't store file");
@@ -178,7 +178,7 @@ export default class Exam {
       console.log(`[Error]: ${error}`);
       return null;
     });
-    if (!exam) return Promise.reject("Can't update exam");
+    if (!result) return Promise.reject("Can't update exam");
     return result;
   }
 }

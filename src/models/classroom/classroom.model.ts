@@ -9,6 +9,7 @@ const ClassroomSchema = new Schema<IClassroomSchema>(
     creatorId: { type: String, required: true, select: false },
     name: { type: String, required: true },
     exams: { type: [String], default: [] },
+    size: { type: Number, default: 0 },
     members: {
       type: [String],
       default: [],

@@ -35,20 +35,20 @@ export const storeMediaToFirebase = async (
       .save(file.buffer, { contentType: file.mimetype, public: true })
       .then(() => "Upload successfully")
       .catch((error) => {
-        console.log(`[ERROR UPLOAD EXAMS]:\n${error} `);
+        console.log(`[ERROR UPLOAD FILE]:\n${error} `);
         return null;
       });
     if (!saveNotification) {
-      return Promise.reject("Can't upload exams to server media");
+      return Promise.reject("Can't upload files to server media");
     }
     console.log("[Firebase - process]: # Upload successfully");
 
     const resPublic = await item.getMetadata().catch((error) => {
-      console.log(`[ERROR PUBLIC EXAMS]:\n${error} `);
+      console.log(`[ERROR PUBLIC FILE]:\n${error} `);
       return null;
     });
     if (!resPublic) {
-      return Promise.reject("Can't public exams on server media");
+      return Promise.reject("Can't public files on server media");
     }
     console.log("[Firebase - process]: # Public successfully");
     return {
@@ -57,8 +57,8 @@ export const storeMediaToFirebase = async (
       public: item.publicUrl(),
     };
   } catch (error) {
-    console.log(`[ERROR UPLOAD EXAMS]:\n${error} `);
-    return Promise.reject("Can't public exams on server media");
+    console.log(`[ERROR UPLOAD FILE]:\n${error} `);
+    return Promise.reject("Can't public file on server media");
   }
 };
 
@@ -69,19 +69,19 @@ export const removeMediaInFilebase = async (name: string) => {
       .file(name)
       .delete()
       .then(() => {
-        console.log(`[REMOVE EXAMS]: Successfully`);
+        console.log(`[Firebase - process]: Remove Successfully`);
         return name;
       })
       .catch((error) => {
-        console.log(`[REMOVE EXAMS]: ${error}`);
+        console.log(`[ERROR UPLOAD FILE]: Remove ${error}`);
         return null;
       });
     if (!removeNotification) {
-      return Promise.reject("Can't remove exams to server media");
+      return Promise.reject("Can't remove file to server media");
     }
     return removeNotification;
   } catch (error) {
-    console.log(`[ERROR REMOVE EXAMS]:\n${error} `);
-    return Promise.reject("Can't remove exams on server media");
+    console.log(`[ERROR REMOVE FILE]:\n${error} `);
+    return Promise.reject("Can't remove file on server media");
   }
 };

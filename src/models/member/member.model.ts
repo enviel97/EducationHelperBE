@@ -14,10 +14,13 @@ const MemberSchema = new Schema<IMemeberSchema>({
   avatar: { type: String, default: "" },
 });
 
+MemberSchema.index({ firstName: "text", lastName: "text" });
+
 MemberSchema.post("save", async function (next) {
   const member = this;
   await classroomModel
     .findByIdAndUpdate(member.classId, {
+      $inc: { size: 1 },
       $push: { members: [member.id] },
     })
 
@@ -27,8 +30,12 @@ MemberSchema.post("save", async function (next) {
 
 MemberSchema.post("insertMany", async function (res, next) {
   const members = res.map((mem: any) => mem._id.toString());
+  console.log(members);
   await classroomModel
-    .findByIdAndUpdate(res[0].classId, { $push: { members } })
+    .findByIdAndUpdate(res[0].classId, {
+      $inc: { size: members?.length ?? 0 },
+      $push: { members },
+    })
     .catch((error) => console.log("[Update error members]" + error))
     .finally(next);
 });
@@ -37,7 +44,10 @@ MemberSchema.post("findOneAndDelete", async function (res, next) {
   const idMembers = res._id.toString();
   const idClassroom = res.classId.toString();
   await classroomModel
-    .findByIdAndUpdate(idClassroom, { $pull: { members: idMembers } })
+    .findByIdAndUpdate(idClassroom, {
+      $inc: { size: -1 },
+      $pull: { members: idMembers },
+    })
     .catch((error) => console.log("[Update error members]" + error))
     .finally(next);
 });
@@ -46,7 +56,7 @@ MemberSchema.post("deleteMany", async function (res, next) {
   const classId = res[0]?.classId.toString() ?? undefined;
   if (!classId) return;
   await classroomModel
-    .findByIdAndUpdate({ classId }, { $set: { members: [] } })
+    .findByIdAndUpdate({ classId }, { $set: { size: 0, members: [] } })
     .catch((error) => console.log("[Update error classroom]" + error))
     .finally(next);
 });

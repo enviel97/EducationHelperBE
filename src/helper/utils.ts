@@ -3,6 +3,7 @@ import { NextFunction, Request, Response } from "express";
 import { error } from "./https";
 import { Token } from "./jsontoken";
 import redis from "../config/redis";
+import multer, { MulterError } from "multer";
 
 export function validation(req: Request, res: Response, next: NextFunction) {
   const errors = validationResult(req);
@@ -24,7 +25,7 @@ export const defaultAvatar = (name: string) => {
   return defaultAvatar;
 };
 
-export const fileFilter = (
+const fileFilter = (
   _: Request,
   file: Express.Multer.File | undefined,
   onDone: any
@@ -61,4 +62,33 @@ export const verifyAccount = async (
     return error(res).UNAUTHORIZED("Token is invalid");
   }
   return next();
+};
+
+export const verifyFile = (req: Request, res: Response, next: NextFunction) => {
+  if (!!req.files) {
+    error(res).BADREQUEST("Allow single files");
+    return;
+  }
+  const storage = multer.memoryStorage();
+  const upload = multer({ storage, fileFilter }).single("content");
+  return upload(req, res, (err) => {
+    if (err instanceof Error) return error(res).BADREQUEST(err.message);
+    if (err instanceof MulterError) return res.send(err);
+    if (!req.file) return error(res).BADREQUEST("File is required");
+    next();
+  });
+};
+
+export const filterFile = (req: Request, res: Response, next: NextFunction) => {
+  if (req.files?.length ?? 0 > 1) {
+    error(res).BADREQUEST("Allow single files");
+    return;
+  }
+  const storage = multer.memoryStorage();
+  const upload = multer({ storage, fileFilter }).single("content");
+  return upload(req, res, (err) => {
+    if (err instanceof Error) return error(res).BADREQUEST(err.message);
+    if (err instanceof MulterError) return res.send(err);
+    next();
+  });
 };
