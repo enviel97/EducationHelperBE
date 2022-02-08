@@ -25,7 +25,7 @@ export const defaultAvatar = (name: string) => {
   return defaultAvatar;
 };
 
-const fileFilter = (
+export const fileFilter = (
   _: Request,
   file: Express.Multer.File | undefined,
   onDone: any

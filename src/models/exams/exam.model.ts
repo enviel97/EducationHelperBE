@@ -1,9 +1,8 @@
 import { Schema } from "mongoose";
 import mongoose from "../../config/mongose";
-import { ExamType, IContent, IExamSchema, IPoint, IQuest } from "./exam.types";
+import { ExamType, IExamSchema } from "./exam.types";
 import TopicModel from "../topic/topic.model";
-import topic from "../../route/topic";
-import classroomModel from "../classroom/classroom.model";
+import { IContent, IPoint, IQuest } from "../../helper/type.helper";
 
 const Point = new Schema<IPoint>(
   {

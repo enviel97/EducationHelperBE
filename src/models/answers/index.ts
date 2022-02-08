@@ -140,10 +140,15 @@ export default class Answer {
 
   // findOnce
   public async findOnce(id: String) {
-    const result = await Model.findById(id).catch((error) => {
-      console.log(`[Answer get once]: ${error}`);
-      return null;
-    });
+    const result = await Model.findById(id)
+      .populate({
+        path: "member",
+        select: { firstName: 1, lastName: 1, phoneNumber: 1, mail: 1 },
+      })
+      .catch((error) => {
+        console.log(`[Answer get once]: ${error}`);
+        return null;
+      });
 
     if (!result) return Promise.reject("Can't found answer");
     return result;

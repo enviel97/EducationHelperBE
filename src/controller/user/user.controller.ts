@@ -17,10 +17,22 @@ export const getUserInfo = async (req: Request, res: Response) => {
       avatar: 1,
       userType: 1,
     })
-      .populate("exams", {
-        _id: 1,
-        expiredDate: 1,
-      })
+      .populate([
+        {
+          path: "exams",
+          select: {
+            _id: 1,
+            expiredDate: 1,
+          },
+          populate: {
+            path: "exam",
+            select: {
+              _id: 0,
+              "content.originName": 1,
+            },
+          },
+        },
+      ])
       .catch(() => null);
     if (!user) return error(res).NOTFOUND("User not found");
     return success(res).ACCEPTED({ id: data, ...(user as any)["_doc"] });

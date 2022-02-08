@@ -20,12 +20,11 @@ export default class Topic {
           path: "classroom",
           select: {
             name: 1,
-            members: 1,
             size: 1,
           },
         },
         { path: "exam" },
-        { path: "answers" },
+        { path: "answers", select: { _id: 1, member: 1, status: 1 } },
       ])
       .catch((err) => {
         console.log(`[Error get all topic]:\n${err}`);
@@ -38,9 +37,8 @@ export default class Topic {
   public async findOnce(id: string) {
     const result = await Modal.findById(id)
       .populate([
-        { path: "classroom", select: { name: 1, members: 1, size: 1 } },
+        { path: "classroom", select: { name: 1, size: 1 } },
         { path: "exam" },
-        { path: "answers" },
       ])
       .select({ classroom: 1, expiredDate: 1, createdAt: 1, note: 1 })
       .catch((err) => {
@@ -148,6 +146,7 @@ export default class Topic {
             options: { sort: { firstName: 1, lastName: 1 } },
           },
         },
+        { path: "answers" },
       ])
       .select({ classroom: 1, answers: 1 })
       .catch((err) => {

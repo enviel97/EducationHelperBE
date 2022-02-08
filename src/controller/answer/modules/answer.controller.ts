@@ -14,23 +14,22 @@ const tryPraseDate = (date: any) => {
 };
 
 export const create = async (req: Request, res: Response) => {
-  // const file = req.file!;
+  const file = req.file!;
   const { topicId, memberId, createDate, note = "" } = req.body;
-  console.log(req.body);
-  // const result = await repo
-  //   .create({
-  //     topicId: topicId,
-  //     memberId: memberId,
-  //     createDate: tryPraseDate(createDate),
-  //     note: note,
-  //     file: file,
-  //   })
-  //   .catch((err) => {
-  //     error(res).CONFLICT(err);
-  //     return null;
-  //   });
-  // if (!result) return;
-  return success(res).OK("test");
+  const result = await repo
+    .create({
+      topicId: topicId,
+      memberId: memberId,
+      createDate: tryPraseDate(createDate),
+      note: note,
+      file: file,
+    })
+    .catch((err) => {
+      error(res).CONFLICT(err);
+      return null;
+    });
+  if (!result) return;
+  return success(res).OK(result);
 };
 
 export const update = async (req: Request, res: Response) => {
