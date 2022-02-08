@@ -15,6 +15,7 @@ export default class Topic {
       sort: { expiredDate: 1 },
       limit: props?.limit ?? undefined,
     })
+      .lean()
       .populate([
         {
           path: "classroom",
@@ -36,6 +37,7 @@ export default class Topic {
 
   public async findOnce(id: string) {
     const result = await Modal.findById(id)
+      .lean()
       .populate([
         { path: "classroom", select: { name: 1, size: 1 } },
         { path: "exam" },
@@ -116,6 +118,7 @@ export default class Topic {
           }
         : {}
     )
+      .lean()
       .populate([{ path: "classroom exam" }])
       .then((exam) => {
         const reg = new RegExp(query);
@@ -137,6 +140,7 @@ export default class Topic {
 
   public async getMembers(id: string) {
     const result = await Modal.findById(id)
+      .lean()
       .populate([
         {
           path: "classroom",

@@ -44,10 +44,12 @@ export default class Answer {
       createDate = new Date(),
       note = "",
     } = members;
+
     const fResponse = await this.getFirebaseResponse(file!).catch((error) => {
       console.log(`ANSWER CREATE ERROR STOREFILE: ${error}`);
       return null;
     });
+
     if (!fResponse) return Promise.reject("Can't store file");
 
     const topic = await TopicModel.findById(topicId, { expiredDate: 1 });
@@ -143,6 +145,7 @@ export default class Answer {
   // findOnce
   public async findOnce(id: String) {
     const result = await Model.findById(id)
+      .lean()
       .populate({
         path: "member",
         select: { firstName: 1, lastName: 1, phoneNumber: 1, mail: 1 },
@@ -163,10 +166,12 @@ export default class Answer {
     const result = await Model.findByIdAndUpdate(id, {
       grade: grade,
       review: review,
-    }).catch((error) => {
-      console.log(`[Grading error] ${error}`);
-      return null;
-    });
+    })
+      .lean()
+      .catch((error) => {
+        console.log(`[Grading error] ${error}`);
+        return null;
+      });
     if (!result) return Promise.reject("Can't grading answers");
     return result;
   }
