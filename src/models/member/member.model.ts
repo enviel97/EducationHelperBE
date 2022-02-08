@@ -2,6 +2,8 @@ import { Schema } from "mongoose";
 import mongoose from "../../config/mongose";
 import { IMemeberSchema } from "./member.types";
 import classroomModel from "../classroom/classroom.model";
+import answer from "../../route/answer";
+import answersModel from "../answers/answers.model";
 
 const MemberSchema = new Schema<IMemeberSchema>({
   classId: { type: String, required: true, select: false },
@@ -23,7 +25,7 @@ MemberSchema.post("save", async function (next) {
       $inc: { size: 1 },
       $push: { members: [member.id] },
     })
-
+    .lean()
     .catch((error) => console.log("[Update member]" + error))
     .finally(next);
 });
@@ -36,6 +38,7 @@ MemberSchema.post("insertMany", async function (res, next) {
       $inc: { size: members?.length ?? 0 },
       $push: { members },
     })
+    .lean()
     .catch((error) => console.log("[Update error members]" + error))
     .finally(next);
 });
@@ -43,11 +46,18 @@ MemberSchema.post("insertMany", async function (res, next) {
 MemberSchema.post("findOneAndDelete", async function (res, next) {
   const idMembers = res._id.toString();
   const idClassroom = res.classId.toString();
+  await answersModel
+    .findOneAndDelete({ member: idMembers })
+    .lean()
+    .catch((error) => console.log("[Update error members]" + error))
+    .finally(next);
+
   await classroomModel
     .findByIdAndUpdate(idClassroom, {
       $inc: { size: -1 },
       $pull: { members: idMembers },
     })
+    .lean()
     .catch((error) => console.log("[Update error members]" + error))
     .finally(next);
 });
@@ -57,6 +67,7 @@ MemberSchema.post("deleteMany", async function (res, next) {
   if (!classId) return;
   await classroomModel
     .findByIdAndUpdate({ classId }, { $set: { size: 0, members: [] } })
+    .lean()
     .catch((error) => console.log("[Update error classroom]" + error))
     .finally(next);
 });

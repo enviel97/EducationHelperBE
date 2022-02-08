@@ -35,6 +35,7 @@ AnswerSchema.post("save", async function (res: any) {
 
   await topicModel
     .findByIdAndUpdate(topic, { $addToSet: { answers: id } })
+    .lean()
     .catch((error) => {
       console.log(`[Answer Topic error]: ${error}`);
       return null;

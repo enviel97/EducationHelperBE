@@ -26,10 +26,12 @@ ClassroomSchema.index({
 ClassroomSchema.post("findOneAndDelete", async function (res, next) {
   const classId: string = res._id.toString();
   await MemberModel.deleteMany({ classId: classId })
+    .lean()
     .catch((error) => console.log(`[Topic Member error] ${error}`))
     .finally(() => next());
 
   await TopicModel.deleteMany({ classroom: classId })
+    .lean()
     .catch((error) => console.log(`[Topic Classroom error] ${error}`))
     .finally(() => next());
 });

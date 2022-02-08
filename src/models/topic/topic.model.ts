@@ -25,12 +25,15 @@ TopicSchema.post("save", async function (res: any) {
   // Classroom Model
   await classroomModel
     .findByIdAndUpdate(classId, { $addToSet: { exams: id } })
+    .lean()
     .catch((error) => console.log(`Topic-Class eroor: ${error}`));
 
   // User Model
   await UserModel.findByIdAndUpdate(creatorId, {
     $addToSet: { exams: id },
-  }).catch((error) => console.log(`Topic-User eroor: ${error}`));
+  })
+    .lean()
+    .catch((error) => console.log(`Topic-User eroor: ${error}`));
 });
 
 TopicSchema.post("findOneAndDelete", async function (res: any) {
@@ -40,12 +43,15 @@ TopicSchema.post("findOneAndDelete", async function (res: any) {
   // Classroom Model
   await classroomModel
     .findByIdAndUpdate(classId, { $pull: { exams: id } })
+    .lean()
     .catch((error) => console.log(`Topic-Class eroor: ${error}`));
 
   // User Model
   await UserModel.findByIdAndUpdate(creatorId, {
     $pull: { exams: id },
-  }).catch((error) => console.log(`Topic-User eroor: ${error}`));
+  })
+    .lean()
+    .catch((error) => console.log(`Topic-User eroor: ${error}`));
   const answersModel = new Answer();
   // Answers Model
   await Promise.all([

@@ -54,17 +54,19 @@ ExamSchema.index({
 
 ExamSchema.post("findOneAndDelete", async function (res, next) {
   const examId: string = res._id.toString();
-  const topics = await TopicModel.find({ exam: examId }).catch((error) => {
-    console.log(`[Topic Exam error] ${error}`);
-    return null;
-  });
+  const topics = await TopicModel.find({ exam: examId })
+    .lean()
+    .catch((error) => {
+      console.log(`[Topic Exam error] ${error}`);
+      return null;
+    });
 
   if ((!topics || topics.length === 0) ?? true) return;
   Promise.all([
     topics.forEach(async () => {
-      await TopicModel.findOneAndDelete({ exam: examId }).catch((error) =>
-        console.log(`[Topic-Exam error] ${error}`)
-      );
+      await TopicModel.findOneAndDelete({ exam: examId })
+        .lean()
+        .catch((error) => console.log(`[Topic-Exam error] ${error}`));
     }),
   ]).catch((err) => {
     console.log(`[Exam-topics remove error]: ${err} `);

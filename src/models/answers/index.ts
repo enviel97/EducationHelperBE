@@ -123,10 +123,12 @@ export default class Answer {
 
   // delete
   public async delete(id: String) {
-    const result = await Model.findByIdAndDelete(id).catch((error) => {
-      console.log(`[Delete answers error]: ${error}`);
-      return null;
-    });
+    const result = await Model.findByIdAndDelete(id)
+      .lean()
+      .catch((error) => {
+        console.log(`[Delete answers error]: ${error}`);
+        return null;
+      });
 
     if (!result) return Promise.reject("Can't delete answers");
 
