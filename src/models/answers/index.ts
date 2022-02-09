@@ -88,10 +88,12 @@ export default class Answer {
       content: 1,
       status: 1,
       note: 1,
-    }).catch((error) => {
-      console.log(error);
-      return null;
-    });
+    })
+      .lean()
+      .catch((error) => {
+        console.log(error);
+        return null;
+      });
     if (!answer) return Promise.reject("Can't found answer");
     if (!!file) {
       const fResponse = await this.getFirebaseResponse(file).catch((error) => {
@@ -100,7 +102,10 @@ export default class Answer {
       });
       if (!fResponse) return Promise.reject("Can't store file");
       const remove = await removeMediaInFilebase(answer.content.name).catch(
-        (error) => null
+        (error) => {
+          console.log(`ANSWER REMOVE ERROR STOREFILE: ${error}`);
+          return null;
+        }
       );
       if (!remove) return Promise.reject("Can't remove answer file");
       answer.content.originName = file.filename ?? file.originalname;
@@ -117,10 +122,16 @@ export default class Answer {
       answer.note = note;
     }
 
-    const result = await answer.save().catch((err) => {
-      console.log(`[Update answer error]: ${err}`);
-      return null;
-    });
+    const result = await Model.findByIdAndUpdate(id, {
+      content: answer.content,
+      note: answer.note,
+      status: answer.status,
+    })
+      .lean()
+      .catch((err) => {
+        console.log(`[Update answer error]: ${err}`);
+        return null;
+      });
     if (!result) return Promise.reject("Can't update answers");
     return result;
   }
