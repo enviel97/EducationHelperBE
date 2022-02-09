@@ -16,7 +16,7 @@ const router = Router();
 router.get("/:id", getOnce);
 router.put("/grade/:id", verifyAccount, grade);
 router.post("/create", verifyFile, verifyMemberCreate, verifyTopic, create);
-router.post("/update/:id", filterFile, verifyMemberUpdate, verifyTopic, update);
+router.post("/update/:id", filterFile, update);
 
 export default express.inject({
   name: "answers",

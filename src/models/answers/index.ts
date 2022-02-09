@@ -80,15 +80,15 @@ export default class Answer {
 
   // update
   public async update(id: String, members: ReqMember) {
-    const {
-      topicId,
-      file = undefined,
-      createDate = new Date(),
-      note = "",
-    } = members;
+    const { file = undefined, createDate = new Date(), note = "" } = members;
     if (!createDate && !file && !note)
       return Promise.reject("Don't have any data update");
-    let answer = await Model.findById(id).catch((error) => {
+    let answer = await Model.findById(id, {
+      topic: 1,
+      content: 1,
+      status: 1,
+      note: 1,
+    }).catch((error) => {
       console.log(error);
       return null;
     });
@@ -108,7 +108,9 @@ export default class Answer {
       answer.content.download = fResponse.download;
       answer.content.public = fResponse.public;
 
-      const topic = await TopicModel.findById(topicId, { expiredDate: 1 });
+      const topic = await TopicModel.findById(answer.topic, {
+        expiredDate: 1,
+      }).lean();
       answer.status = this.getStatus(createDate, topic?.expiredDate);
     }
     if (!!note) {

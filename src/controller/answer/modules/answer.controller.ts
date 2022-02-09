@@ -35,10 +35,10 @@ export const create = async (req: Request, res: Response) => {
 export const update = async (req: Request, res: Response) => {
   const file = req.file;
   const { id } = req.params;
-  const { topicId, createDate = new Date(), note } = req.body;
+  const { createDate = new Date(), note } = req.body;
   const result = await repo
     .update(id, {
-      topicId: topicId,
+      topicId: "",
       memberId: "",
       createDate: tryPraseDate(createDate),
       note: note,
