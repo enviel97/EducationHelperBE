@@ -8,11 +8,21 @@ import redis from "../../../config/redis";
 
 export const signinWithEmail = async (req: Request, res: Response) => {
   const { email, password } = req.body;
-  const user = await UserModel.findOne({ email }).catch(() => null);
+  const user = await UserModel.findOne({ email })
+    .select({
+      id: 1,
+      password: 1,
+      name: 1,
+      email: 1,
+      avatar: 1,
+    })
+    .lean()
+    .catch(() => null);
   if (!user) return error(res).NOTFOUND("Invalid username or password");
-  if (await bcrypt.compare(password, user.password)) {
-    const token = Token.create(user.id);
-    await redis.write(user.id, `${token}`);
+  const id = (user as any)["_id"].toString();
+  if (await bcrypt.compare(password, user.password ?? "")) {
+    const token = Token.create(id);
+    await redis.write(id, `${token}`);
     return success(res).CREATED({
       token: token,
       name: user.name || user.email,
