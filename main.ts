@@ -4,7 +4,10 @@ import express from "./src/config/express";
 import firebase from "./src/config/firebase";
 import mongoose from "./src/config/mongose";
 import redis from "./src/config/redis";
+import throng from "throng";
 import "./src/route";
+// new
+const WORKERS = process.env.WEB_CONCURRENCY || 1;
 
 const config = (): Promise<NExpress> =>
   new Promise(async (resolve, reject) => {
@@ -27,5 +30,10 @@ const run = async () => {
     console.log(`Local host: http://localhost:${PORT}`);
   });
 };
-
-run().catch((err) => console.log(`[Server connect error]:\n ${err}`));
+// new
+throng({
+  workers: WORKERS,
+  lifetime: Infinity,
+  start: () =>
+    run().catch((err) => console.log(`[Server connect error]:\n ${err}`)),
+});
