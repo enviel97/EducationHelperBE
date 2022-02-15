@@ -86,12 +86,22 @@ export default class Classroom {
   }
 
   public async search(query: object, sorted?: Sorted) {
-    const result = await Modal.find(query, null, { sort: sorted }).catch(
-      (err) => {
+    const result = await Modal.find(query, null, { sort: sorted })
+      .populate({
+        path: "members",
+        select: {
+          _id: 1,
+          lastName: 1,
+          firstName: 1,
+          mail: 1,
+          phoneNumber: 1,
+        },
+      })
+      .lean()
+      .catch((err) => {
         console.log(`[Search Error]: ${err}`);
         return null;
-      }
-    );
+      });
     if (!result) return null;
     return result;
   }

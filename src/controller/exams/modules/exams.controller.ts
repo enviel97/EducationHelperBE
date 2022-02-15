@@ -37,18 +37,18 @@ export const searchExams = async (req: Request, res: Response) => {
   const query = req.query.query as string;
   const sorted = req.query.sorted as string;
   const flow = (req.query.flow as string) === "desc" ? -1 : 1;
+  const id = Token.decode(`${req.headers.authenticate}`)!;
 
   const exam = new Exam();
   let sort: Sorted | undefined = undefined;
   if (!!sorted) {
     sort = { [sorted]: flow };
   }
-  const result = await exam
-    .search({ $text: { $search: new RegExp(query) } }, sort)
-    .catch((err) => {
-      error(res).BADREQUEST(err);
-      return null;
-    });
+  const regex = new RegExp(query);
+  const result = await exam.search(id, regex, sort).catch((err) => {
+    error(res).BADREQUEST(err);
+    return null;
+  });
   if (!result) return;
   return success(res).ACCEPTED(result);
 };

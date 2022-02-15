@@ -33,7 +33,7 @@ export const create = async (req: Request, res: Response) => {
       creatorId: data,
       classroom: classroomId,
       exam: examId,
-      expiredDate: expiredDate,
+      expiredDate: new Date(expiredDate),
       note: note,
       answers: [],
     })

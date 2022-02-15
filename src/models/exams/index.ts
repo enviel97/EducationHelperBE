@@ -117,13 +117,26 @@ export default class Exam {
     return result;
   }
 
-  public async search(query: object, sorted?: Sorted) {
-    const result = await Model.find(query, null, { sort: sorted }).catch(
-      (err) => {
+  public async search(id: string, query: object, sorted?: Sorted) {
+    const result = await Model.find(
+      {
+        creatorId: id,
+        $or: [
+          { subject: query },
+          { "content.originName": query },
+          { "content.name": query },
+        ],
+      },
+      null,
+      {
+        sort: sorted,
+      }
+    )
+      .lean()
+      .catch((err) => {
         console.log(`[Search Error]: ${err}`);
         return null;
-      }
-    );
+      });
     if (!result) return null;
     return result;
   }
