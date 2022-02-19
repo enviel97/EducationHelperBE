@@ -1,4 +1,7 @@
+import { NextFunction, Request, Response } from "express";
 import { body } from "express-validator";
+import multer, { MulterError } from "multer";
+import { error } from "../../../helper/https";
 import { validation } from "../../../helper/utils";
 
 const rule = [
@@ -19,5 +22,31 @@ const rule = [
       "i"
     ),
 ];
+const validationImage = (req: Request, res: Response, next: NextFunction) => {
+  if (!!req.files) {
+    error(res).BADREQUEST("Allow single files");
+    return;
+  }
+  const storage = multer.memoryStorage();
+  const upload = multer({
+    storage,
+    fileFilter: (
+      _: Request,
+      file: Express.Multer.File | undefined,
+      onDone: any
+    ) => {
+      const regex = new RegExp(/.(jpg|jpeg|png)$/);
+      if (!file || !regex.test(file.originalname)) {
+        return onDone(new Error("Only allow file type jpg, jpeg, png"), false);
+      }
+      onDone(null, true);
+    },
+  }).single("avatar");
+  return upload(req, res, (err) => {
+    if (err instanceof Error) return error(res).BADREQUEST(err.message);
+    if (err instanceof MulterError) return res.send(err);
+    next();
+  });
+};
 
-export default { signup: [rule, validation] };
+export default { signup: [validationImage, rule, validation] };
